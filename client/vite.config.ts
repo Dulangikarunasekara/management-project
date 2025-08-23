@@ -13,6 +13,7 @@ export default defineConfig({
       target:'react',
       autoCodeSplitting:true,
     }),
+    tailwindcss(),
     react()],
     resolve: {
     alias: {
