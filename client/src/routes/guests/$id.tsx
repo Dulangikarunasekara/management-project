@@ -1,9 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+
+
+const viewGuest = () =>{
+}
+
 export const Route = createFileRoute('/guests/$id')({
-  component: RouteComponent,
+  component: viewGuest,
 })
 
-function RouteComponent() {
-  return <div>Hello "/guests/$id"!</div>
-}

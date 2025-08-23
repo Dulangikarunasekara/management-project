@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useMemo, useState, useEffect } from 'react';
+import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
+import { useMemo, useState } from 'react';
 import { type PaginationState, type SortingState } from '@tanstack/react-table';
-import { type ViewAllGuestsDTO } from '../dts/view-all-guests';
+import { type ViewAllGuestsShema } from '../schema/view-all-guests';
 import { useSelector } from 'react-redux';
 import { selectGuestFilters } from '../state/guest-slice';
 import Search from '@/components/search';
@@ -27,12 +27,9 @@ const Guests = () => {
     { id: "email", desc: false }
   ]);
   const guestFilters = useSelector(selectGuestFilters);
-  // const filters = { email: "dulangi2002@gmail.com" };
-
-
 
   const memoizedData = useMemo(() => {
-    const body: ViewAllGuestsDTO = {
+    const body: ViewAllGuestsShema = {
       page: pagination.pageIndex - 1,
       size: pagination.pageSize,
       sortDirection: "DESC",
@@ -81,42 +78,20 @@ const Guests = () => {
             />
           </div>
           <div>
-            <Button className="h-[40px]">
+            <Button className="h-[40px]" onClick={() => {
+              navigate({ to: "/guests/new" })
+            }}>
               <div className="flex gap-2">
                 Add Guest
               </div>
             </Button>
           </div>
-
+          <div>
+            <Outlet />
+          </div>
         </div>
 
-        <div className="mt-4 p-4 bg-gray-100 rounded">
-          <h3 className="font-bold">Debug Info:</h3>
-          <p>Data length: {data?.length || 0}</p>
-          <p>Sample data: {JSON.stringify(data?.[0], null, 2)}</p>
-        </div>
 
-        {/* <div className="mt-4">
-          <h3 className="font-bold mb-2">Simple Debug Table:</h3>
-          <table className="border-collapse border border-gray-300 w-full">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="border border-gray-300 p-2">ID</th>
-                <th className="border border-gray-300 p-2">Email</th>
-                <th className="border border-gray-300 p-2">Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(data || []).map((item, index) => (
-                <tr key={item.id || index}>
-                  <td className="border border-gray-300 p-2">{item.id}</td>
-                  <td className="border border-gray-300 p-2">{item.email}</td>
-                  <td className="border border-gray-300 p-2">{item.created}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div> */}
 
         <div className="mt-10 h-[calc(100vh-220px)] overflow-y-auto scrollbar pe-2">
           <DataTable

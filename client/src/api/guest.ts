@@ -1,6 +1,7 @@
 // guest.js - Updated with better error handling and debugging
 import PocketBase from "pocketbase";
-import { type ViewAllGuestsDTO } from "../dts/view-all-guests";
+import { type ViewAllGuestsShema } from "../schema/view-all-guests";
+import type { addGuestSchema } from "@/schema/add-guest";
 
 const pb = new PocketBase(
 	import.meta.env.VITE_PB_URL || "http://127.0.0.1:8090"
@@ -11,7 +12,7 @@ interface Guest {
 	email?: string;
 	created: string;
 }
-export const fetchGuestList = async (data?: ViewAllGuestsDTO) => {
+export const fetchGuestList = async (data?: ViewAllGuestsShema) => {
 	try {
 		const filters: string[] = [];
 
@@ -48,3 +49,21 @@ export const fetchGuestList = async (data?: ViewAllGuestsDTO) => {
 		throw error;
 	}
 };
+
+export const addGuest = async (data: addGuestSchema) => {
+	try {
+		const record = {
+			first_name: data.firstName,
+			last_name: data.lastName,
+			email: data.email,
+			phone: data.phoneNumer,
+			address: data.address,
+			date_of_birth: data.dateOfBirth,
+		};
+		return await pb.collection("guests").create(record);
+	} catch (error) {
+		console.log("Error creating user ", error);
+	}
+};
+
+
