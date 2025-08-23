@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PocketBase from "pocketbase";
 
-// Create PocketBase instance (use your env variable or hardcode for now)
 const pb = new PocketBase(import.meta.env.VITE_PB_URL || "http://127.0.0.1:8090");
 
-// Define the type for Guest records
 interface Guest {
   id: string;
   email?: string;
   created: string;
 }
 
-const Guests: React.FC = () => {
+const Guests = () => {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +17,7 @@ const Guests: React.FC = () => {
     const fetchGuests = async () => {
       try {
         const records = await pb.collection("guests").getFullList<Guest>({
-          sort: "-created", // newest first
+          sort: "-created",
         });
         setGuests(records);
       } catch (err) {

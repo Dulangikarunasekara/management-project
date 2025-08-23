@@ -1,4 +1,4 @@
-export type ViewAllGuestsDTO = {
+export type ViewAllGuestsShema = {
     page?: number;
     size?: number;
     sortField?:"CREATED_DATE"

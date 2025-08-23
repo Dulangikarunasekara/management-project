@@ -39,9 +39,7 @@ const Search = (props:IProps) =>{
           }}
         />
       </div>
-      {/* <div className="w-auto ps-2">
-        <MaterialIcon icon="search" color="var(--primary)" />
-      </div> */}
+
     </div>
     )
 
