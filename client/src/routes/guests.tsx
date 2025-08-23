@@ -14,7 +14,6 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchGuestList } from '@/api/guest';
 import { columns } from '@/components/guest-table/columns';
 import GuestFilterSheet from '@/components/guest/filter-panel';
-import { gu } from 'date-fns/locale';
 
 const Guests = () => {
   const navigate = useNavigate();
@@ -67,18 +66,7 @@ const Guests = () => {
   if (isLoading) return 'Loading...';
   if (error) return 'An error has occurred: ' + error.message;
 
-  // const onViewGuest = (id: string) => {
-  //   navigate({
-  //     to: '/guests/$id',
-  //     params: { id }
-  //   })
-  // }
 
-  // const onAddGuest = () => {
-
-  // }
-
-  // Debug render
   console.log("Rendering with data:", data);
 
   return (
@@ -102,15 +90,13 @@ const Guests = () => {
 
         </div>
 
-        {/* Debug display */}
         <div className="mt-4 p-4 bg-gray-100 rounded">
           <h3 className="font-bold">Debug Info:</h3>
           <p>Data length: {data?.length || 0}</p>
           <p>Sample data: {JSON.stringify(data?.[0], null, 2)}</p>
         </div>
 
-        {/* Alternative simple table for debugging */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <h3 className="font-bold mb-2">Simple Debug Table:</h3>
           <table className="border-collapse border border-gray-300 w-full">
             <thead>
@@ -130,7 +116,7 @@ const Guests = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        </div> */}
 
         <div className="mt-10 h-[calc(100vh-220px)] overflow-y-auto scrollbar pe-2">
           <DataTable
