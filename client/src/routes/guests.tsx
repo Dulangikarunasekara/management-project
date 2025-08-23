@@ -10,10 +10,12 @@ import { DataTable } from '@/components/guest-table/data-table';
 import Pagination from '@/components/pagination';
 import Loader from '@/components/loader';
 import { format } from 'date-fns';
-import { useQuery } from '@tanstack/react-query';
-import { fetchGuestList } from '@/api/guest';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchGuestList, updateGuest } from '@/api/guest';
 import { columns } from '@/components/guest-table/columns';
 import GuestFilterSheet from '@/components/guest/filter-panel';
+import type { updateGuestSchema } from '@/schema/update-guest';
+
 
 const Guests = () => {
   const navigate = useNavigate();
@@ -27,6 +29,9 @@ const Guests = () => {
     { id: "email", desc: false }
   ]);
   const guestFilters = useSelector(selectGuestFilters);
+
+
+
 
   const memoizedData = useMemo(() => {
     const body: ViewAllGuestsShema = {
@@ -64,7 +69,6 @@ const Guests = () => {
   if (error) return 'An error has occurred: ' + error.message;
 
 
-  console.log("Rendering with data:", data);
 
   return (
     <>

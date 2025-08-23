@@ -1,4 +1,4 @@
-export type addGuestSchema  = {
+export type updateGuestSchema  = {
     firstName?: string;
     lastName?: string;
     email?:string
