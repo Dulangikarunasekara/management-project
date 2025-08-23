@@ -24,15 +24,15 @@ const formSchema = z.object({
 
 const AddUpdateGuest = () => {
   const navigate = useNavigate();
-  const [isVisible , setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: "",
-      lastName:"",
-      phone:"",
-      address:"",
-      dateOfBirth:new Date()
+      lastName: "",
+      phone: "",
+      address: "",
+      dateOfBirth: new Date()
     }
   })
 
@@ -43,9 +43,9 @@ const AddUpdateGuest = () => {
     onSuccess: () => form.reset()
   })
 
-  const { mutate,  isError, error, isSuccess } = addGuestMutation;
+  const { mutate, isError, error, isSuccess } = addGuestMutation;
 
-  
+
   if (isError) {
     return <span>{`An error has occurred: ${error.message}`}</span>;
   }

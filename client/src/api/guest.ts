@@ -1,11 +1,9 @@
-// guest.js - Updated with better error handling and debugging
 import PocketBase from "pocketbase";
 import { type ViewAllGuestsShema } from "../schema/view-all-guests";
 import type { addGuestSchema } from "@/schema/add-guest";
+import type { updateGuestSchema } from "@/schema/update-guest";
 
-const pb = new PocketBase(
-	import.meta.env.VITE_PB_URL || "http://127.0.0.1:8090"
-);
+const pb = new PocketBase(import.meta.env.VITE_PB_URL);
 
 interface Guest {
 	id: string;
@@ -63,6 +61,47 @@ export const addGuest = async (data: addGuestSchema) => {
 		return await pb.collection("guests").create(record);
 	} catch (error) {
 		console.log("Error creating user ", error);
+	}
+};
+
+export const viewGuest = async (id: string) => {
+	try {
+		const record = await pb.collection("guests").getOne(id);
+		const mapped = {
+			id: record.id,
+			email: record.email,
+			created: record.created,
+			firstName: record.first_name,
+			lastName: record.last_name,
+			phone: record.phone,
+			address: record.address,
+			dateOfBirth: record.date_of_birth,
+		};
+
+		return mapped;
+	} catch (error) {
+		console.log("Error fetching user ", error);
+	}
+};
+
+export const updateGuest = async (
+	input: Partial<updateGuestSchema>,
+	id: string
+) => {
+	try {
+		const data: Record<string, any> = {};
+
+		if (input.firstName !== undefined) data.first_name = input.firstName;
+		if (input.lastName !== undefined) data.last_name = input.lastName;
+		if (input.email !== undefined) data.email = input.email;
+		if (input.phoneNumer !== undefined) data.phone = input.phoneNumer;
+		if (input.address !== undefined) data.address = input.address;
+		if (input.dateOfBirth !== undefined) data.date_of_birth = input.dateOfBirth;
+
+		const record = await pb.collection("guests").update(id, data);
+		return record;
+	} catch (error) {
+		console.log("Error updating user ", error);
 	}
 };
 
