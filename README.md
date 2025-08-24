@@ -47,4 +47,6 @@ npm run dev
 - Add Guest – Create a new guest with details like name, email, phone, and address  
 - View All Guests – Browse the complete list of guests in the database  
 - View One Guest – Check details of a specific guest by selecting their record  
-- Update Guest – Edit and update guest information   
+- Update Guest – Edit and update guest information
+- Ability to search for a guest by the first name
+- Ability to filter guests by their created date which would also be their booking date
