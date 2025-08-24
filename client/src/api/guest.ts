@@ -3,7 +3,7 @@ import type { addGuestSchema } from "@/schema/add-guest";
 import type { updateGuestSchema } from "@/schema/update-guest";
 import type { ViewAllGuestsFilterSchema } from "@/schema/view-all-guest-filters";
 
-const pb = new PocketBase(import.meta.env.VITE_PB_URL);
+const pb = new PocketBase(import.meta.env.VITE_PB_URL || 'http://127.0.0.1:8090');
 await pb.collection("users").authWithPassword("admin@gmail.com", "Admin123");
 
 export interface Guest {
