@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
 import { useMemo, useState } from 'react';
 import { type PaginationState, type SortingState } from '@tanstack/react-table';
-import { type ViewAllGuestsFilterSchema } from '../schema/view-all-guests';
+import { type ViewAllGuestsFilterSchema } from '../schema/view-all-guest-filters';
 import { useSelector } from 'react-redux';
 import { selectGuestFilters, selectSearch } from '../state/guest-slice';
 import Search from '@/components/search';
@@ -63,30 +63,33 @@ const Guests = () => {
   return (
     <>
       <div className="px-4">
-        <div className="flex gap-2">
-          <div>
-            <Search
-              value={search}
-              placeholder="Search Name and Contact"
-            />
+        <div className="flex gap-2 ">
+          <div className='flex align-baseline w-full space-x-2 items-center'>
+            <div className='w-full'>
+              <Search
+                value={search}
+                placeholder="Search by first name"
+              />
+            </div>
+            <div className='flex space-x-2'>
+              <Button className="h-12 rounded-full" onClick={() => {
+                navigate({ to: "/guests/new" })
+              }}>
+                <span>+ New guest</span>
+              </Button>
+              <Button className='h-12' onClick={() => setShowFiltersPanel(true)}><span className="material-symbols-outlined ">
+                filter_alt
+              </span></Button>
+
+            </div>
           </div>
-          <div>
-            <Button className="h-[40px]" onClick={() => {
-              navigate({ to: "/guests/new" })
-            }}>
-              <div className="flex gap-2">
-                Add Guest
-              </div>
-            </Button>
-          </div>
-          <div>
-            <Outlet />
-          </div>
+        </div>
+        <div >
+          <Outlet />
         </div>
 
 
-
-        <div className="mt-10 h-[calc(100vh-220px)] overflow-y-auto scrollbar pe-2">
+        <div className="mt-10 h-[calc(100vh-220px)] overflow-y-auto">
           <DataTable
             data={data ?? []}
             columns={columns}
@@ -106,7 +109,6 @@ const Guests = () => {
 
       </div>
       <Loader show={isLoading} />
-      <Button onClick={() => setShowFiltersPanel(true)}>filter</Button>
       <GuestFilterSheet
         show={showFiltersPanel}
         onClose={() => setShowFiltersPanel(false)}

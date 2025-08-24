@@ -1,8 +1,8 @@
 export type addGuestSchema  = {
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     email:string
-    phoneNumer:number;
+    c:string;
     address:string;
-    dateOfBirth:Date;
+    date_of_birth:Date;
 }

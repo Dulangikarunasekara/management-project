@@ -1,5 +1,8 @@
-export type ViewAllGuestsFilterSchema = {
-    searchText?:string;
-    firstname?:string,
-    bookingDate?:string
+export type viewGuestSSchema  = {
+    firstName?: string;
+    lastName?: string;
+    email?:string
+    phoneNumer?:number;
+    address?:string;
+    dateOfBirth?:Date;
 }

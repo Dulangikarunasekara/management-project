@@ -1,15 +1,15 @@
-import { createFileRoute, useParams } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { useMutation, useQuery, QueryClient, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { updateGuest, viewGuest } from '@/api/guest';
 import { useEffect, useState } from 'react';
 import type { updateGuestSchema } from '@/schema/update-guest';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -34,6 +34,7 @@ const formSchema = z.object({
 const GuestDetail = () => {
 
   const params = useParams({ from: '/guests/$id' });
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,7 +53,7 @@ const GuestDetail = () => {
   const mutation = useMutation({
     mutationFn: ({ data, id }: { data: Partial<updateGuestSchema>, id: string; }) =>
       updateGuest(data, id), onSuccess: (newGuest) => {
-          queryClient.invalidateQueries({ queryKey: ["guests"] });
+        queryClient.invalidateQueries({ queryKey: ["guests"] });
 
         alert("Guest updated successfully")
       },
@@ -69,12 +70,12 @@ const GuestDetail = () => {
     id: string
   ) => {
     const body: Partial<updateGuestSchema> = {
-      firstName: values.firstName,
-      lastName: values.lastName,
+      first_name: values.firstName,
+      last_name: values.lastName,
       email: values.email,
-      phoneNumer: Number(values.phone),
+      phone: values.phone,
       address: values.address,
-      dateOfBirth: values.dateOfBirth
+      date_of_birth: values.dateOfBirth
     }
 
     mutation.mutate({ id, data: body })
@@ -113,119 +114,142 @@ const GuestDetail = () => {
 
   return (
     <>
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="w-[300px] overflow-y-scroll">
-          <SheetHeader>
-            <SheetTitle>{data.id}</SheetTitle>
+      <Sheet open={open} onOpenChange={() => {
+        setOpen(false);
+        navigate({ to: '/guests' });
+      }}>
+        <SheetContent side="right" className="w-[400px]">
+          <SheetHeader className='shadow-md'>
+            <SheetTitle>
+              <div className='flex-col'>
+                <h3>ID:{data.id}</h3>
+                <span className='text-[10px]'>First Name: {data.firstName}</span>
+              </div>
+            </SheetTitle>
           </SheetHeader>
-          <div>
+          <div className='p-3 '>
             <Form {...form} >
               <form
                 onSubmit={form.handleSubmit((values) => handleUpdateGuest(values, params.id))}
-                className="space-y-8 bg-amber-500"
-              >                <FormField
-                  control={form.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input  {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                className="space-y-8 h-[550px]  overflow-y-scroll  no-scrollbar"              >
 
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="input last name" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone</FormLabel>
-                      <FormControl>
-                        <Input  {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className='bg-cell-bg text-text-primary p-2 rounded-sm'>
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='px-3'>First Name</FormLabel>
+                        <FormControl>
+                          <Input  {...field} />
+                        </FormControl>
 
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input placeholder="input guest address" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className='bg-cell-bg text-text-primary p-2 rounded-sm'>
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='px-3'>Last Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="input last name" {...field} />
+                        </FormControl>
 
-                <FormField
-                  control={form.control}
-                  name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>date of birth</FormLabel>
-                      <FormControl>
-                        <DatePicker selected={field.value} onChange={(date) => field.onChange(date)} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                <Button type="submit">update</Button>
+
+                <div className='bg-cell-bg text-text-primary p-2 rounded-sm'>
+
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='px-3'>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input  {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+
+                <div className='bg-cell-bg text-text-primary p-2 rounded-sm'>
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='px-3'>Email</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+
+
+                <div className='bg-cell-bg text-text-primary p-2 rounded-sm'>
+
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='px-3'>Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="input guest address" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+
+
+                <div className='bg-cell-bg text-text-primary p-2 rounded-sm'>
+
+                  <FormField
+                    control={form.control}
+                    name="dateOfBirth"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='px-3'>Date Of Birth</FormLabel>
+                        <FormControl>
+                          <DatePicker selected={field.value} onChange={(date) => field.onChange(date)} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+
+                <div className="flex justify-end mt-4">
+                  <Button type="submit" className='px-3'>Update</Button>
+                </div>
               </form>
             </Form>
           </div>
