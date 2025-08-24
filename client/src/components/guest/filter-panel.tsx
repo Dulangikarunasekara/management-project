@@ -4,7 +4,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet"
 import { selectGuestFilters, setGuestFilters, resetGuestFilters } from "@/state/guest-slice";
 import { useEffect, useState } from "react";
