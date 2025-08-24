@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "../ui/button"
 import { type PaginationState } from '@tanstack/react-table';
+import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -27,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   pageCount?:number,
   sorting?:SortingState,
   setSorting?: React.Dispatch<React.SetStateAction<SortingState>>;
+  onRowClick:(row:TData) =>void
 }
 
 export function DataTable<TData, TValue>({
@@ -35,19 +37,23 @@ export function DataTable<TData, TValue>({
   pagination,
   pageCount,
   sorting,
-  setSorting
+  setSorting,
+  onRowClick
 }: DataTableProps<TData, TValue>) {
+  const [rowSelection , setRowSelection ] = useState({});
   const table = useReactTable({
     data,
     columns,
     state:{
       sorting,
-      pagination
+      pagination,
+      rowSelection
     },
     pageCount:pageCount,
     onSortingChange:setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel :getPaginationRowModel(),
+    onRowSelectionChange:setRowSelection
   })
 
   return (
@@ -56,7 +62,8 @@ export function DataTable<TData, TValue>({
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow 
+            key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
@@ -78,6 +85,9 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                onClick={()=> {
+                  onRowClick(row.original)
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

@@ -5,10 +5,15 @@ import type { updateGuestSchema } from "@/schema/update-guest";
 
 const pb = new PocketBase(import.meta.env.VITE_PB_URL);
 
-interface Guest {
+export interface Guest {
 	id: string;
 	email?: string;
 	created: string;
+	address?:string;
+	phone?:string;
+	lastName?:string,
+	firstName?:string;
+	dateOfBirth?:Date
 }
 export const fetchGuestList = async (data?: ViewAllGuestsShema) => {
 	try {
@@ -58,9 +63,11 @@ export const addGuest = async (data: addGuestSchema) => {
 			address: data.address,
 			date_of_birth: data.dateOfBirth,
 		};
-		return await pb.collection("guests").create(record);
+		const newGuest= await pb.collection("guests").create(record);
+		return newGuest;
 	} catch (error) {
 		console.log("Error creating user ", error);
+		throw error;
 	}
 };
 
@@ -106,3 +113,45 @@ export const updateGuest = async (
 };
 
 
+export const getPaginatedGuestList = async ( page:number  , perPage:number , data?: ViewAllGuestsShema ) => {
+	try {
+		const filters: string[] = [];
+
+		if (data?.bookingDate) {
+			filters.push(`created~"${data.bookingDate}"`);
+		}
+
+		if (data?.searchText) {
+			filters.push(`first_name="${data.searchText}"`);
+		}
+
+		const filterQuery = filters.length > 0 ? filters.join(" && ") : undefined;
+
+		const records = await pb.collection("guests").getList<Guest>(page , perPage ,{
+			filter: filterQuery,
+		});
+
+		if (!records || records.items.length === 0) {
+			console.log("No records found matching the filter");
+			return [];
+		}
+
+		const mapped = records.items.map((r) => {
+			return {
+				id: r.id,
+				email: r.email,
+				created: r.created,
+				firstName: r.firstName,
+				lastName: r.lastName,
+				phone:r.phone,
+				address:r.address,
+				dateOfBirth:r.dateOfBirth
+			};
+		});
+
+		return mapped;
+	} catch (error) {
+		console.error("Error fetching guest list:", error);
+		throw error;
+	}
+};

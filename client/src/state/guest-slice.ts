@@ -1,14 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
-
-type Guest = {
-    id:string,
-	firstName: string;
-	lastName: string;
-	phone: string;
-	email: string;
-};
+import {type Guest } from "@/api/guest";
 
 type GuestFilters = {
 	bookingDate: Date | null;
@@ -66,3 +59,4 @@ export default reducer;
 
 export const selectSearch = (state: RootState) => state.search;
 export const selectGuestFilters = (state: RootState) => state.filters;
+export const selectGuests = (state:RootState) => state.guests;

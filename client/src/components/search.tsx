@@ -1,47 +1,51 @@
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
+import { useDispatch } from "react-redux";
+import { setSearch } from "@/state/guest-slice";
 
 interface IProps {
-    value:string;
-    placeholder?:string;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
+  value: string;
+  placeholder?: string;
 }
 
-const Search = (props:IProps) =>{
-    const {value , placeholder , setValue} = props;
-    const [ search , setSearch ] = useState(value);
+const Search = (props: IProps) => {
+  const { value, placeholder } = props;
+  const [searchValue, setSearchValue] = useState(value);
+  const dispatch = useDispatch();
 
-    useEffect(() =>{ 
-        setSearch(value)
-    }, [value])
+  useEffect(() => {
+    setSearchValue(value)
+  }, [value])
 
-    useEffect(() => { 
-        const handler = setTimeout(() =>{
-            setValue(search.trim())
-        }, 1000);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const trimmed = searchValue.trim();
 
-        return () =>  clearTimeout(handler)
-        
-    }, [search , setValue]);
+      dispatch(setSearch(trimmed))
+    }, 1000);
 
-    return (
-        <div className="flex justify-between items-center border border-input px-2 rounded-lg h-[40px] bg-white">
+    return () => clearTimeout(handler)
+
+  }, [searchValue]);
+
+  return (
+    <div className="flex justify-between items-center border border-input px-2 rounded-lg h-[40px] bg-white">
       <div className="flex-grow">
         <Input
           placeholder={placeholder}
           className="border-none outline-none focus-visible:ring-0 shadow-none px-0"
-          value={search}
+          value={searchValue}
           onChange={(event) => {
-            if (event.target.value.trim() === "") {
-              setValue("");
-            }
-            setSearch(event.target.value);
+            // if (event.target.value.trim() === "") {
+            //   setValue("");
+            // }
+            setSearchValue(event.target.value);
           }}
         />
       </div>
 
     </div>
-    )
+  )
 
 }
 

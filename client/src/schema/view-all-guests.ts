@@ -1,8 +1,4 @@
-export type ViewAllGuestsShema = {
-    page?: number;
-    size?: number;
-    sortField?:"CREATED_DATE"
-    sortDirection?:"ASC" | "DESC";
+export type ViewAllGuestsFilterSchema = {
     searchText?:string;
     firstname?:string,
     bookingDate?:string

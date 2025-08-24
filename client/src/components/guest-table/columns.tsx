@@ -2,9 +2,9 @@
 
 import { type ColumnDef } from "@tanstack/react-table"
 
-interface Guest {
+type Guest = {
   id: string;
-  email?: string;
+  email: string;
   created: string;
 }
 
