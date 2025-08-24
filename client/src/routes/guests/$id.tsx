@@ -5,9 +5,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { useMutation, useQuery, QueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, QueryClient, useQueryClient } from '@tanstack/react-query';
 import { updateGuest, viewGuest } from '@/api/guest';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { updateGuestSchema } from '@/schema/update-guest';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import z from 'zod';
@@ -47,18 +47,19 @@ const GuestDetail = () => {
   })
 
 
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<updateGuestSchema> }) =>
-      updateGuest(data, id), onSuccess: newGuest => {
-        queryClient.setQueryData(['guests', params.id], newGuest);
+    mutationFn: ({ data, id }: { data: Partial<updateGuestSchema>, id: string; }) =>
+      updateGuest(data, id), onSuccess: (newGuest) => {
+          queryClient.invalidateQueries({ queryKey: ["guests"] });
+
         alert("Guest updated successfully")
       },
     onError: (error) => {
       console.log(error)
     },
-    
+
 
   })
 

@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,22 +9,28 @@ import DatePicker from '@/components/date-picker'
 import { type addGuestSchema } from '@/schema/add-guest'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addGuest } from '@/api/guest'
-import { useState } from 'react'
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
     message: "First name must be at least 2 characters"
   }),
   lastName: z.string(),
-  phone: z.string(),
-  email: z.email(),
+  phone: z
+    .string()
+    .min(10, { message: "Phone number must be at least 10 digits" })
+    .max(15, { message: "Phone number cannot exceed 15 digits" })
+    .regex(/^\+?[0-9\s\-]+$/, { message: "Invalid phone number format" }),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .max(100, { message: "Email cannot exceed 100 characters" }),
+
   address: z.string(),
-  dateOfBirth: z.date(),
+  dateOfBirth: z.date().max(new Date(), { message: "Date of birth cannot be in the future" })
+  ,
 })
 
 const AddUpdateGuest = () => {
-  const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,6 +38,7 @@ const AddUpdateGuest = () => {
       lastName: "",
       phone: "",
       address: "",
+      email: "",
       dateOfBirth: new Date()
     }
   })
@@ -40,7 +47,13 @@ const AddUpdateGuest = () => {
   const queryClient = useQueryClient();
   const addGuestMutation = useMutation({
     mutationFn: (body: addGuestSchema) => addGuest(body),
-    onSuccess: () => form.reset()
+    onSuccess: (newGuest) => {
+      form.reset();
+      queryClient.invalidateQueries({ queryKey: ["guests"], exact: false });
+      queryClient.setQueryData(["guests"], (old: any) =>
+        old ? [...old, newGuest] : [newGuest]
+      );
+    }
   })
 
   const { mutate, isError, error, isSuccess } = addGuestMutation;
