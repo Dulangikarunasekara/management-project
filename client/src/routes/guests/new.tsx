@@ -1,4 +1,4 @@
-import { createFileRoute, useLocation, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
