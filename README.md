@@ -25,7 +25,7 @@ pocketbase serve
 
 Pocketbase will run at http://127.0.0.1:8090.
 
-# To set up the frontend 
+# To set up the frontend :
 Make sure  pocketbase is running. 
 
 Navigate into the project folder with the frontend files:
@@ -42,3 +42,9 @@ to run the frontend application type the following in the terminal:
 ```bash
 npm run dev
 ```
+
+## Features
+- Add Guest – Create a new guest with details like name, email, phone, and address  
+- View All Guests – Browse the complete list of guests in the database  
+- View One Guest – Check details of a specific guest by selecting their record  
+- Update Guest – Edit and update guest information   
