@@ -22,27 +22,32 @@ const Search = (props: IProps) => {
       const trimmed = searchValue.trim();
 
       dispatch(setSearch(trimmed))
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(handler)
 
   }, [searchValue]);
 
   return (
-    <div className="flex justify-between items-center border border-input px-2 rounded-lg h-[40px] bg-white">
+    <div id="search-bar" className="flex justify-between space-x-2 
+    items-center border border-input px-4 rounded-full h-14  bg-searchbar text-searchbartext" >
+      <div className="w-auto">
+        <span className="material-symbols-outlined  text-black">
+          search
+        </span>
+      </div>
       <div className="flex-grow">
         <Input
           placeholder={placeholder}
-          className="border-none outline-none focus-visible:ring-0 shadow-none px-0"
+          className="border-none outline-none focus-visible:ring-0 
+          shadow-none px-0"
           value={searchValue}
           onChange={(event) => {
-            // if (event.target.value.trim() === "") {
-            //   setValue("");
-            // }
             setSearchValue(event.target.value);
           }}
         />
       </div>
+
 
     </div>
   )

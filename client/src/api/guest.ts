@@ -1,21 +1,22 @@
 import PocketBase from "pocketbase";
-import { type ViewAllGuestsShema } from "../schema/view-all-guests";
 import type { addGuestSchema } from "@/schema/add-guest";
 import type { updateGuestSchema } from "@/schema/update-guest";
+import type { ViewAllGuestsFilterSchema } from "@/schema/view-all-guest-filters";
 
 const pb = new PocketBase(import.meta.env.VITE_PB_URL);
+await pb.collection("users").authWithPassword("admin@gmail.com", "Admin123");
 
 export interface Guest {
 	id: string;
 	email?: string;
 	created: string;
-	address?:string;
-	phone?:string;
-	lastName?:string,
-	firstName?:string;
-	dateOfBirth?:Date
+	address?: string;
+	phone?: string;
+	last_name?: string;
+	first_name?: string;
+	date_of_birth?: Date;
 }
-export const fetchGuestList = async (data?: ViewAllGuestsShema) => {
+export const fetchGuestList = async (data?: ViewAllGuestsFilterSchema) => {
 	try {
 		const filters: string[] = [];
 
@@ -24,7 +25,7 @@ export const fetchGuestList = async (data?: ViewAllGuestsShema) => {
 		}
 
 		if (data?.searchText) {
-			filters.push(`first_name="${data.searchText}"`);
+			filters.push(`first_name~"${data.searchText}"`);
 		}
 
 		const filterQuery = filters.length > 0 ? filters.join(" && ") : undefined;
@@ -43,6 +44,11 @@ export const fetchGuestList = async (data?: ViewAllGuestsShema) => {
 				id: r.id,
 				email: r.email,
 				created: r.created,
+				firstName: r.first_name,
+				lastName: r.last_name,
+				address: r.address,
+				phone: r.phone,
+				dateOfBirth: r.date_of_birth ? new Date(r.date_of_birth) : undefined,
 			};
 		});
 
@@ -56,14 +62,14 @@ export const fetchGuestList = async (data?: ViewAllGuestsShema) => {
 export const addGuest = async (data: addGuestSchema) => {
 	try {
 		const record = {
-			first_name: data.firstName,
-			last_name: data.lastName,
+			first_name: data.first_name,
+			last_name: data.last_name,
 			email: data.email,
-			phone: data.phoneNumer,
+			phone: data.phone,
 			address: data.address,
-			date_of_birth: data.dateOfBirth,
+			date_of_birth: data.date_of_birth,
 		};
-		const newGuest= await pb.collection("guests").create(record);
+		const newGuest = await pb.collection("guests").create(record);
 		return newGuest;
 	} catch (error) {
 		console.log("Error creating user ", error);
@@ -97,13 +103,13 @@ export const updateGuest = async (
 ) => {
 	try {
 		const data: Record<string, any> = {};
-
-		if (input.firstName !== undefined) data.first_name = input.firstName;
-		if (input.lastName !== undefined) data.last_name = input.lastName;
+		if (input.first_name !== undefined) data.first_name = input.first_name;
+		if (input.last_name !== undefined) data.last_name = input.last_name;
 		if (input.email !== undefined) data.email = input.email;
-		if (input.phoneNumer !== undefined) data.phone = input.phoneNumer;
+		if (input.phone !== undefined) data.phone = input.phone;
 		if (input.address !== undefined) data.address = input.address;
-		if (input.dateOfBirth !== undefined) data.date_of_birth = input.dateOfBirth;
+		if (input.date_of_birth !== undefined)
+			data.date_of_birth = input.date_of_birth;
 
 		const record = await pb.collection("guests").update(id, data);
 		return record;
@@ -112,8 +118,11 @@ export const updateGuest = async (
 	}
 };
 
-
-export const getPaginatedGuestList = async ( page:number  , perPage:number , data?: ViewAllGuestsShema ) => {
+export const getPaginatedGuestList = async (
+	page: number,
+	perPage: number,
+	data?: ViewAllGuestsFilterSchema
+) => {
 	try {
 		const filters: string[] = [];
 
@@ -127,9 +136,11 @@ export const getPaginatedGuestList = async ( page:number  , perPage:number , dat
 
 		const filterQuery = filters.length > 0 ? filters.join(" && ") : undefined;
 
-		const records = await pb.collection("guests").getList<Guest>(page , perPage ,{
-			filter: filterQuery,
-		});
+		const records = await pb
+			.collection("guests")
+			.getList<Guest>(page, perPage, {
+				filter: filterQuery,
+			});
 
 		if (!records || records.items.length === 0) {
 			console.log("No records found matching the filter");
@@ -141,11 +152,11 @@ export const getPaginatedGuestList = async ( page:number  , perPage:number , dat
 				id: r.id,
 				email: r.email,
 				created: r.created,
-				firstName: r.firstName,
-				lastName: r.lastName,
-				phone:r.phone,
-				address:r.address,
-				dateOfBirth:r.dateOfBirth
+				firstName: r.first_name,
+				lastName: r.last_name,
+				phone: r.phone,
+				address: r.address,
+				dateOfBirth: r.date_of_birth,
 			};
 		});
 

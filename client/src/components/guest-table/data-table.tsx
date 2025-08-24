@@ -57,16 +57,16 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div>
-    <div className="overflow-hidden rounded-md border">
+    <div id="data-table"> 
+    <div className="overflow-hidden ">
       <Table>
-        <TableHeader>
+        <TableHeader  >
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow 
             key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead className="hover:bg-table-header" key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -82,7 +82,8 @@ export function DataTable<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
+              <TableRow 
+                className="text-left text-[12px] hover:bg-secondary"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
                 onClick={()=> {
@@ -106,7 +107,7 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
-     <div className="flex items-center justify-end space-x-2 py-4">
+     {/* <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
@@ -123,7 +124,7 @@ export function DataTable<TData, TValue>({
         >
           Next
         </Button>
-      </div>
+      </div> */}
     </div>
   )
 }

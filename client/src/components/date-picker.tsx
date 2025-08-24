@@ -29,14 +29,14 @@ const DatePicker = ({ selected, onChange}: IProps) => {
         <Button
           variant="outline"
           data-empty={!selected}
-          className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+          className="data-[empty=true]:text-muted-foreground w-[250px] justify-start text-left font-normal"
         >
           <CalendarIcon />
           {selected ? format(selected, "PPP") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar mode="single" selected={selected ?? undefined} onSelect={handleSelect} />
+        <Calendar mode="single" selected={selected ?? undefined} onSelect={handleSelect}  />
       </PopoverContent>
     </Popover>
   )
